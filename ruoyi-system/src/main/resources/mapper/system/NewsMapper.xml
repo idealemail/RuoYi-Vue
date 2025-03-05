@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.NewsMapper">
+
+    <resultMap type="News" id="NewsResult">
+        <result property="id"    column="id"    />
+        <result property="title"    column="title"    />
+        <result property="content"    column="content"    />
+        <result property="source"    column="source"    />
+        <result property="status"    column="status"    />
+        <result property="author"    column="author"    />
+        <result property="publishedAt"    column="published_at"    />
+        <result property="createdAt"    column="created_at"    />
+        <result property="updatedAt"    column="updated_at"    />
+    </resultMap>
+
+    <sql id="selectNewsVo">
+        select id, title, content, source, status, author, published_at, created_at, updated_at from news
+    </sql>
+
+    <select id="selectNewsList" parameterType="News" resultMap="NewsResult">
+        <include refid="selectNewsVo"/>
+        <where>
+            <if test="title != null  and title != ''"> and title = #{title}</if>
+            <if test="content != null  and content != ''"> and content = #{content}</if>
+            <if test="source != null  and source != ''"> and source = #{source}</if>
+            <if test="status != null "> and status = #{status}</if>
+            <if test="author != null  and author != ''"> and author = #{author}</if>
+            <if test="publishedAt != null "> and published_at = #{publishedAt}</if>
+            <if test="createdAt != null "> and created_at = #{createdAt}</if>
+            <if test="updatedAt != null "> and updated_at = #{updatedAt}</if>
+        </where>
+    </select>
+
+    <select id="selectNewsById" parameterType="String" resultMap="NewsResult">
+        <include refid="selectNewsVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertNews" parameterType="News" useGeneratedKeys="true" keyProperty="id">
+        insert into news
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="title != null and title != ''">title,</if>
+            <if test="content != null and content != ''">content,</if>
+            <if test="source != null">source,</if>
+            <if test="status != null">status,</if>
+            <if test="author != null">author,</if>
+            <if test="publishedAt != null">published_at,</if>
+            <if test="createdAt != null">created_at,</if>
+            <if test="updatedAt != null">updated_at,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="title != null and title != ''">#{title},</if>
+            <if test="content != null and content != ''">#{content},</if>
+            <if test="source != null">#{source},</if>
+            <if test="status != null">#{status},</if>
+            <if test="author != null">#{author},</if>
+            <if test="publishedAt != null">#{publishedAt},</if>
+            <if test="createdAt != null">#{createdAt},</if>
+            <if test="updatedAt != null">#{updatedAt},</if>
+        </trim>
+    </insert>
+
+    <update id="updateNews" parameterType="News">
+        update news
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="title != null and title != ''">title = #{title},</if>
+            <if test="content != null and content != ''">content = #{content},</if>
+            <if test="source != null">source = #{source},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="author != null">author = #{author},</if>
+            <if test="publishedAt != null">published_at = #{publishedAt},</if>
+            <if test="createdAt != null">created_at = #{createdAt},</if>
+            <if test="updatedAt != null">updated_at = #{updatedAt},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteNewsById" parameterType="String">
+        delete from news where id = #{id}
+    </delete>
+
+    <delete id="deleteNewsByIds" parameterType="String">
+        delete from news where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
